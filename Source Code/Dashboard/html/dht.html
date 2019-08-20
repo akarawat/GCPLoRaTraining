@@ -23,8 +23,8 @@
 </head>
 <body>
   <h2 align="center">Chart display Temperature and Humidity data from DHT sensor</h2>
-  <p align="center">Send data by Espino IoT development board.</p>
-  <p align="center">powered by <a href="https://www.iottweet.com">IoTtweet.com</a><p>
+  <p align="center">Send data by LoRa IoT development board.</p>
+
   <div><canvas id="temp" width="700" height="450"></canvas></div>
   <div><canvas id="humid" width="700" height="450"></canvas></div>
 
@@ -70,14 +70,11 @@ function parsejson(_txtParse){
   var parsed = JSON.parse(_txtParse);
   var parsed_obj = parsed.dataset;
 
-  //var browser_unix = new Date();
-  //var browser_time = new Date();
-
   for(var i in parsed_obj){
     t_set[i] = parsed_obj[i].t;
     h_set[i] = parsed_obj[i].h;
-    t_timeset[i] = moment(new Date(Number(parsed_obj[i].recordTime))).format('MMM Do YY, h:mm:ss a');
-    h_timeset[i] = moment(new Date(Number(parsed_obj[i].recordTime))).format('MMM Do YY, h:mm:ss a');
+    t_timeset[i] = parsed_obj[i].recordTime;
+    h_timeset[i] = parsed_obj[i].recordTime;
   }
 
   t_set = re_numbering(t_set);

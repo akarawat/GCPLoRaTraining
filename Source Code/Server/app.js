@@ -43,6 +43,20 @@ app.get('/read/:datasize', function (req, res) {
   readdata(datasize, res);
 });
 
+async function readdata(_datasize, res){
+  await readDataFromMongo(_datasize, res);
+}
+
+function readDataFromMongo(_readdatasize, res){
+  return new Promise(function(resolve,reject){
+    var dhtcollection = dhtdb.collection(mycoll);
+    dhtcollection.find({}).limit(Number(_readdatasize)).sort({recordTime: -1}, function(err, docs){
+      console.log(JSON.stringify(docs));
+      res.jsonp(docs);
+    });
+  });
+}
+
 /* For DHT write */
 app.get('/writedht/:t/:h', function (req, res) {
   var strParseWriteReq = JSON.stringify(req.params);

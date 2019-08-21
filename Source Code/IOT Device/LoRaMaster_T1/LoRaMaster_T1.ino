@@ -13,7 +13,7 @@
 #include "SSD1306.h"
 
 #define SCK     5    // GPIO5  -- SX1278's SCK
-#define MISO    19   // GPIO19 -- SX1278's MISnO
+#define MISO    19   // GPIO19 -- SX1278's MISO
 #define MOSI    27   // GPIO27 -- SX1278's MOSI
 #define SS      18   // GPIO18 -- SX1278's CS
 #define RST     14   // GPIO14 -- SX1278's RESET
@@ -22,11 +22,6 @@
 
 SSD1306 display(0x3c, 4, 15);
 
-String nodeKey = "*&|";
-String nodeNo = "lora01";
-
-const long intval = 3;  /* set delay loop second */
-unsigned long prevms = 0;
 void setup() {
   pinMode(16, OUTPUT);
   pinMode(2, OUTPUT);
@@ -51,32 +46,39 @@ void setup() {
   display.flipScreenVertically();
   display.setFont(ArialMT_Plain_10);
 
-  prevms = millis();
   delay(1500);
 }
 
-int t, h;
+String pkg;
+String n, t, h;
 void loop() {
+  pkg = "";
+  int packetSize = LoRa.parsePacket();
+  //Exam n01|24|77
+  if (packetSize) {
+    Serial.print("Received packet '");
+    while (LoRa.available()) {
+      //Serial.print((char)LoRa.read());
+      pkg += String((char)LoRa.read());
+    }
+    // print RSSI of packet
+    n = pkg.substring(0, 3);
+    t = pkg.substring(4, 6);
+    h = pkg.substring(7, 10);
+    Serial.println(pkg + "Len:" + pkg.length());
+    Serial.println("Split: " + n + " " + t + " " + h);
+    Serial.print("' with RSSI ");
+    Serial.println(LoRa.packetRssi());
 
-  unsigned long curms = millis();
-  if (curms - prevms >= intval * 1000) {
-    t = random(20, 35);
-    h = random(40, 80);
     display.clear();
     display.setTextAlignment(TEXT_ALIGN_LEFT);
     display.setFont(ArialMT_Plain_10);
-    display.drawString(0, 0, "Sending packet: " + nodeNo);
-    display.drawString(10, 15, "Temp: " + String(t));
-    display.drawString(10, 25, "Humidity: " + String(h));
-    display.drawString(0, 35, "---------------------------------");
+    display.drawString(0, 0, "Receiving packet: " + n);
+    display.drawString(10, 15, "Temp:    " + t);
+    display.drawString(10, 25, "Humidity:    " + h);
+    display.drawString(10, 35, "RSSI:    " + String(LoRa.packetRssi()));
     display.drawString(10, 45, "By Tommy");
     display.display();
 
-    // send packet
-    String sndTxt = nodeKey + "|" + nodeNo + "|" + String(t) + "|" + String(h);
-    LoRa.beginPacket();
-    LoRa.print(sndTxt);
-    LoRa.endPacket();
-    prevms = curms;
   }
 }

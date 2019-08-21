@@ -58,14 +58,13 @@ void setup() {
   display.init();
   display.flipScreenVertically();
   display.setFont(ArialMT_Plain_10);
-    
+
   delay(1500);
 }
 
 String nodeKey = "*&|";
 String pkg;
 String key, n, t, h, rssi;
-
 void loop() {
   pkg = "";
   int packetSize = LoRa.parsePacket();

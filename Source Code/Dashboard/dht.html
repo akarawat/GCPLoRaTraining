@@ -51,7 +51,7 @@ setInterval(function(){
 /* script สำหรับเรียกข้อมูลจาก app.js */
 //http://35.240.177.29:4000/readdht/_datasize/?output=jsonp&callback=?
 function getdata(_datasize) {
-  path = 'http://35.240.177.29:4000/readdht/'; /* ใส่ IP address server ของเราลงไปครับ */
+  path = 'http://35.240.177.29:4000/readdht/'; /* ใส่ IP address server ที่ได้จาก Google Cloud */
   path += _datasize;
   path += '?output=jsonp&callback=?';
 
